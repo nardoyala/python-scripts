@@ -78,7 +78,7 @@ def getDollarPrices():
 
 
   # Dollar prices table
-  rangeOfPages = [i for i in range(1,24) if i != 21]
+  rangeOfPages = [i for i in range(12,25) if i != 22]
   dollarTotalSum = 0
   numberOfPages = 0
 
