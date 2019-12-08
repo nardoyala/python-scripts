@@ -11,8 +11,12 @@ def extractFolders():
       if path != root:
         source = path + "\\" + file
         destination = root
-        shutil.move(source, destination)
-        filesCounter += 1
+        fileExists = os.path.exists(file)
+        if not fileExists:
+          shutil.move(source, destination)
+          filesCounter += 1
+        else:
+          print(file + " already exists")
 
   print(str(filesCounter) + " files moved.")
 
