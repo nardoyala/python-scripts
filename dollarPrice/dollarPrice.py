@@ -51,25 +51,29 @@ def getDollarPrices():
                   'Banco Activo',
                   'Banco Exterior',
                   'Banco Mercantil',
+                  'Banplus',
                   'BVC',
                   'Banco de Venezuela',
                   'Banesco',
                   'Otras Instituciones',
+                  'Banco Plaza',
                   'Italcambio',
                   'Remesas Zoom',
-                  'Insular', 'BolivarCucuta',
+                  'Insular',
                   'Cotizaciones']
     dollarPrices = dict()
     pages = list()
     for div in data:
-        pageName = div.find("p1").text
-        pages.append(pageName)
-        if (pageName not in exceptions):
-            pagePrice = div.find("p2").text
-            dollarPrices[pageName] = pagePrice
+        pageName = div.find("p1")
+        if (pageName):
+            pageName = pageName.text
+            pages.append(pageName)
+            if (pageName not in exceptions):
+                pagePrice = div.find("p2").text
+                dollarPrices[pageName] = pagePrice
 
     # Uncomment to see an array with all page names
-    # print (pages)
+    # print(pages)
     return dollarPrices
 
 
