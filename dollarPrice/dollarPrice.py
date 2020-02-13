@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
+# import json
 
 
 def customDateFormat(date):
@@ -73,7 +74,14 @@ def getDollarPrices():
                 dollarPrices[pageName] = pagePrice
 
     # Uncomment to see an array with all page names
+    #
     # print(pages)
+
+    # W Uncomment to generate json file (you must import json)
+    #
+    # with open('dollarPrices.json', 'w') as f:
+    #     json.dump(dollarPrices, f)
+
     return dollarPrices
 
 
