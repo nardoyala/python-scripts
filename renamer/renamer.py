@@ -28,11 +28,11 @@ def rename(userChoice):
             if userChoice == 2:
                 dst = fileName.lower()
             if userChoice == 3:
-                extention = re.search("\.(.*)", fileName)
+                extention = re.search("\.([^.]+$)", fileName)
                 extention = extention.group(0)
                 if leadingZero == "y":
                     dst = customName + separator + \
-                        leadingZero(counter) + extention
+                        addLeadingZero(counter) + extention
                     counter += 1
                 elif leadingZero == "n":
                     dst = customName + separator + str(counter) + extention
