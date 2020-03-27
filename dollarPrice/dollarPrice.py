@@ -56,12 +56,14 @@ def getDollarPrices():
                   'BVC',
                   'Banco de Venezuela',
                   'Banesco',
+                  'Citibank',
                   'Otras Instituciones',
                   'Banco Plaza',
                   'Italcambio',
                   'Remesas Zoom',
                   'Insular',
-                  'Cotizaciones']
+                  'Cotizaciones',
+                  'MoviCambios']
     dollarPrices = dict()
     pages = list()
     for div in data:
