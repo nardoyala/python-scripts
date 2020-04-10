@@ -21,7 +21,7 @@ def customDateFormat(date):
     month = months[date.month - 1]
     year = date.year
 
-    message = "{} de {} del {}".format(day, month, year)
+    message = "{} de {} de {}".format(day, month, year)
     return message
 
 
