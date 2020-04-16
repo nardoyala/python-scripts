@@ -43,27 +43,17 @@ def printLines(message):
 def getDollarPrices():
 
     data = soup.find_all("div", class_="module-moneda")
-    exceptions = ['Mesas de Cambio',
-                  '100% Banco',
-                  'BBVA Provincial',
-                  'BNC',
-                  'Bancamiga',
-                  'BanCaribe',
-                  'Banco Activo',
-                  'Banco Exterior',
-                  'Banco Mercantil',
-                  'Banplus',
-                  'BVC',
-                  'Banco de Venezuela',
-                  'Banesco',
-                  'Citibank',
-                  'Otras Instituciones',
-                  'Banco Plaza',
-                  'Italcambio',
-                  'Remesas Zoom',
-                  'Insular',
-                  'Cotizaciones',
-                  'MoviCambios']
+    validPages = ['AirTM',
+                  'BolivarCucuta',
+                  'CucutaDivisas',
+                  'DolarToday',
+                  'DolarToday (BTC)',
+                  'DolarTrue',
+                  'Dolar Promedio',
+                  'DolarSatochi',
+                  'LocalBitcoins',
+                  'Monitor Dolar',
+                  'Yadio']
     dollarPrices = dict()
     pages = list()
     for div in data:
@@ -71,7 +61,7 @@ def getDollarPrices():
         if (pageName):
             pageName = pageName.text
             pages.append(pageName)
-            if (pageName not in exceptions):
+            if (pageName in validPages):
                 pagePrice = div.find("p2").text
                 dollarPrices[pageName] = pagePrice
 
