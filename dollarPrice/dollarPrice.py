@@ -26,7 +26,7 @@ def customDateFormat(date):
 
 
 def printLines(message):
-    line = ("_"*35).center(messageMargin)
+    line = ("-"*35).center(messageMargin)
 
     print(line)
 
@@ -42,7 +42,7 @@ def printLines(message):
 
 def getDollarPrices():
 
-    data = soup.find_all("div", class_="module-moneda")
+    data = soup.find_all("div", class_="c-nombre")
     validPages = ['AirTM',
                   'BolivarCucuta',
                   'CucutaDivisas',
@@ -51,31 +51,49 @@ def getDollarPrices():
                   'DolarTrue',
                   'Dolar Promedio',
                   'DolarSatochi',
+                  'ExchangeMonitor.net',
                   'LocalBitcoins',
+                  'Mkambio',
                   'Monitor Dolar',
+                  'PayPal',
                   'Yadio']
+    
     dollarPrices = dict()
     pages = list()
     for div in data:
-        pageName = div.find("p1")
+        pageName = div.find("h2", class_="nombre")
         if (pageName):
             pageName = pageName.text
             pages.append(pageName)
             if (pageName in validPages):
-                pagePrice = div.find("p2").text
+                pagePrice = div.find("p", class_="precio").text
                 dollarPrices[pageName] = pagePrice
 
     # Uncomment to see an array with all page names
     #
     # print(pages)
 
-    # W Uncomment to generate json file (you must import json)
+    # Uncomment to generate json file (you must import json)
     #
     # with open('dollarPrices.json', 'w') as f:
     #     json.dump(dollarPrices, f)
 
     return dollarPrices
 
+def calculateAverage(dollarPricesData):
+    pricesList = list()
+
+    for pageName in dollarPricesData:
+        if pageName != 'AirTM' and pageName != 'PayPal':
+            price = dollarPricesData[pageName]
+            formattedPrice = float(price.replace('.','').replace(',', '.'))
+            pricesList.append(formattedPrice)
+
+    average = str(round(sum(pricesList) / len(pricesList), 2))
+    averageTuple = average.split('.')
+    averageTuple[0] = str('{:,}'.format(int(averageTuple[0])).replace(',','.'))
+    formattedAverage =  ','.join(averageTuple)
+    return formattedAverage
 
 response = requests.get('https://exchangemonitor.net/ve')
 soup = BeautifulSoup(response.text, 'html.parser')
@@ -93,12 +111,12 @@ dollarPrices = getDollarPrices()
 formatParameters = "{:<20} : {:>10}"
 
 for pageName in dollarPrices:
-    if pageName != 'Dolar Promedio':
+    if pageName != 'ExchangeMonitor.net':
         message = formatParameters.format(pageName, dollarPrices[pageName])
         print(message.center(messageMargin))
 
 
 # Footer
-average = dollarPrices['Dolar Promedio']
+average = calculateAverage(dollarPrices)
 averageMessage = formatParameters.format("Promedio", average)
 printLines(averageMessage)
