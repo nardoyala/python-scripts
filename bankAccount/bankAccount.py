@@ -1,7 +1,7 @@
 import os
 import pyperclip
 
-accountsPath = "D:\\proyectos\\python\\scripts\\bankAccount\\accounts"
+accountsPath = os.getcwd() + "\\bankAccount\\accounts"
 accounts = os.listdir(accountsPath)
 options = list()
 
