@@ -1,8 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
-# import json
 
+URL = 'https://exchangemonitor.net/ve'
+MARGIN = 50
 
 def customDateFormat(date):
     months = ["Enero",
@@ -25,80 +26,96 @@ def customDateFormat(date):
     return message
 
 
-def printLines(message):
-    line = ("_"*35).center(messageMargin)
+def printLines(message, margin):
+    line = ("-"*35).center(margin)
 
     print(line)
 
     if type(message) == list:
         for i in message:
-            print(i.center(messageMargin))
+            print(i.center(margin))
     else:
-        message = message.center(messageMargin)
+        message = message.center(margin)
         print(message)
 
     print(line)
 
 
-def getDollarPrices():
+def getDollarPrices(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
 
-    data = soup.find_all("div", class_="module-moneda")
-    validPages = ['AirTM',
-                  'BolivarCucuta',
-                  'CucutaDivisas',
-                  'DolarToday',
-                  'DolarToday (BTC)',
-                  'DolarTrue',
-                  'Dolar Promedio',
-                  'DolarSatochi',
-                  'LocalBitcoins',
-                  'Monitor Dolar',
-                  'Yadio']
+    data = soup.find_all('div', class_='c-nombre')
+    validPages = (
+                    'AirTM',
+                    'BolivarCucuta',
+                    'CucutaDivisas',
+                    'DolarToday',
+                    'DolarToday (BTC)',
+                    'DolarTrue',
+                    'Dolar Promedio',
+                    'DolarSatochi',
+                    'ExchangeMonitor.net',
+                    'LocalBitcoins',
+                    'Mkambio',
+                    'Monitor Dolar',
+                    'PayPal',
+                    'Yadio'
+                )
     dollarPrices = dict()
-    pages = list()
+
     for div in data:
-        pageName = div.find("p1")
-        if (pageName):
-            pageName = pageName.text
-            pages.append(pageName)
-            if (pageName in validPages):
-                pagePrice = div.find("p2").text
-                dollarPrices[pageName] = pagePrice
-
-    # Uncomment to see an array with all page names
-    #
-    # print(pages)
-
-    # W Uncomment to generate json file (you must import json)
-    #
-    # with open('dollarPrices.json', 'w') as f:
-    #     json.dump(dollarPrices, f)
+        pageName = div.find("h2", class_="nombre").text
+        if (pageName == 'Monitor Dolar Venezuela'):
+            pageName = 'Monitor Dolar'
+        if (pageName in validPages):
+            pagePrice = div.find("p", class_="precio").text
+            pagePrice = float(pagePrice.replace('.','').replace(',', '.'))
+            dollarPrices[pageName] = pagePrice
 
     return dollarPrices
 
+def calculateAverage(dollarPricesData):
+    pricesList = list()
 
-response = requests.get('https://exchangemonitor.net/ve')
-soup = BeautifulSoup(response.text, 'html.parser')
+    for pageName in dollarPricesData:
+        if pageName != 'AirTM' and pageName != 'PayPal':
+            price = dollarPricesData[pageName]
+            pricesList.append(price)
 
-messageMargin = 50
+    average = round(sum(pricesList) / len(pricesList), 2)
+    return average
 
-# Header
-today = datetime.now()
-date = customDateFormat(today)
-title = "Precio del dólar"
-printLines([title, date])
+def formatNumber(number):
+    number = format(number, '.2f')
+    integerPart = number.split('.')[0]
+    integerPart = format(int(integerPart), ',').replace(',', ' ')
+    decimalPart = number.split('.')[1]
+    formattedNumber = integerPart + "," + decimalPart
+    return formattedNumber
 
-# Dollar prices table
-dollarPrices = getDollarPrices()
-formatParameters = "{:<20} : {:>10}"
+def printDollarPricesTable():
+    dollarPrices = getDollarPrices(URL)
+    formatParameters = "{:<20} : {:>10}"
 
-for pageName in dollarPrices:
-    if pageName != 'Dolar Promedio':
-        message = formatParameters.format(pageName, dollarPrices[pageName])
-        print(message.center(messageMargin))
+    # Header
+    today = datetime.now()
+    date = customDateFormat(today)
+    title = "Precio del dólar"
+    printLines([title, date], MARGIN)
 
+    # Dollar prices table
+    for pageName in dollarPrices:
+        dollarPrice = dollarPrices[pageName]
+        formattedDollarPrice = formatNumber(dollarPrice)
+        message = formatParameters.format(pageName, formattedDollarPrice)
+        print(message.center(MARGIN))
 
-# Footer
-average = dollarPrices['Dolar Promedio']
-averageMessage = formatParameters.format("Promedio", average)
-printLines(averageMessage)
+    # Footer
+    average = calculateAverage(dollarPrices)
+    formattedAverage = formatNumber(average)
+    averageMessage = formatParameters.format("Promedio", formattedAverage)
+    printLines(averageMessage, MARGIN)
+
+if __name__ == '__main__' :
+    printDollarPricesTable()
