@@ -3,7 +3,7 @@ This is a collection of my Python Scripts.
 
 ## Descriptions
 
-* **bankAccount**: Copies into the clipboard information of an specific bank account stored in a .txt file.
+* **bankAccountInfo**: Copies into the clipboard information of an specific bank account stored in a .txt file.
 
 * **createBat**: Creates a .bat file to execute a python script in the windows console.
 

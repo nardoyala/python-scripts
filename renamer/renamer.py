@@ -2,63 +2,66 @@ import os
 import re
 
 
-def addLeadingZero(number):
-    numberString = str(number)
-    digits = len(numberString)
-    number = ("0"*(3 - digits)) + numberString
+def add_leading_zero(number):
+    number_string = str(number)
+    digits = len(number_string)
+    number = ("0"*(3 - digits)) + number_string
     return number
 
 
-def rename(userChoice):
-    filesCounter = 0
+def rename(user_choice):
+    files_counter = 0
     root = os.getcwd()
     for path, dirs, files in os.walk(root):
-        fileNames = os.listdir(path)
-        if userChoice == 3:
-            customName = input("Type base name: ")
+        file_names = os.listdir(path)
+        if user_choice == 3:
+            custom_name = input("Type base name: ")
             separator = input("Type separator: ")
             validator = True
-            leadingZero = input("Do you want leading zeroes? (Y/N)").lower()
-            while leadingZero != "y" and leadingZero != "n":
-                leadingZero = input("Please, select a valid option (Y/N):")
+            leading_zero = input("Do you want leading zeroes? (Y/N)").lower()
+            while leading_zero != "y" and leading_zero != "n":
+                leading_zero = input("Please, select a valid option (Y/N):")
             counter = 1
-        for fileName in fileNames:
-            if userChoice == 1:
-                dst = fileName.capitalize()
-            if userChoice == 2:
-                dst = fileName.lower()
-            if userChoice == 3:
-                extention = re.search("\.([^.]+$)", fileName)
+        for file_name in file_names:
+            if user_choice == 1:
+                dst = file_name.capitalize()
+            if user_choice == 2:
+                dst = file_name.lower()
+            if user_choice == 3:
+                extention = re.search("\.([^.]+$)", file_name)
                 extention = extention.group(0)
-                if leadingZero == "y":
-                    dst = customName + separator + \
-                        addLeadingZero(counter) + extention
+                if leading_zero == "y":
+                    dst = custom_name + separator + \
+                        add_leading_zero(counter) + extention
                     counter += 1
-                elif leadingZero == "n":
-                    dst = customName + separator + str(counter) + extention
+                elif leading_zero == "n":
+                    dst = custom_name + separator + str(counter) + extention
                     counter += 1
-            src = path + "\\" + fileName
+            src = path + "\\" + file_name
             dst = path + "\\" + dst
 
             os.rename(src, dst)
-            filesCounter += 1
+            files_counter += 1
 
-    print(str(filesCounter) + " files renamed")
+    print(str(files_counter) + " files renamed")
 
+def run():
+    CHOICES = ["1", "2", "3"]
 
-choices = ["1", "2", "3"]
+    print("What do you want to do?")
+    print("1 Capitalize")
+    print("2 Lowercase")
+    print("3 Custom")
 
-print("What do you want to do?")
-print("1 Capitalize")
-print("2 Lowercase")
-print("3 Custom")
+    while True:
+        user_choice = input()
+        if user_choice in CHOICES:
+            user_choice = int(user_choice)
+            break
+        else:
+            print("Please, select a proper option")
 
-while True:
-    userChoice = input()
-    if userChoice in choices:
-        userChoice = int(userChoice)
-        break
-    else:
-        print("Please, select a proper option")
+    rename(user_choice)
 
-rename(userChoice)
+if __name__ == '__main__':
+    run()

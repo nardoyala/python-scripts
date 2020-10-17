@@ -2,19 +2,19 @@ import os
 import shutil
 
 
-def extractFolders():
+def run():
     root = os.getcwd()
-    filesCounter = 0
-    isUserSure = ""
+    files_counter = 0
+    is_user_sure = ""
     sure = False
 
     print("Be careful! all folders inside " +
           os.getcwd() + " will be extracted.")
-    while isUserSure not in ["y", "n"]:
-        isUserSure = input(
+    while is_user_sure not in ["y", "n"]:
+        is_user_sure = input(
             "Are you sure to extract all folders? (Y/N): ").lower()
 
-    if isUserSure == "y":
+    if is_user_sure == "y":
         sure = True
 
     if sure:
@@ -24,14 +24,14 @@ def extractFolders():
                 if path != root:
                     source = path + "\\" + file
                     destination = root
-                    fileExists = os.path.exists(file)
-                    if not fileExists:
+                    file_exists = os.path.exists(file)
+                    if not file_exists:
                         shutil.move(source, destination)
-                        filesCounter += 1
+                        files_counter += 1
                     else:
                         print(file + " already exists")
 
-    print(str(filesCounter) + " files moved.")
+    print(str(files_counter) + " files moved.")
 
-
-extractFolders()
+if __name__ == '__main__':
+    run()
