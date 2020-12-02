@@ -93,7 +93,7 @@ def format_number(number):
 def run():
     URL = 'https://exchangemonitor.net/dolar-venezuela'
     MESSAGE_MARGIN = 50
-    FORMAT_PARAMETERS = "{:<20} : {:>10}"
+    FORMAT_PARAMETERS = "{:<20} : {:>12}"
     dollar_prices = get_dollar_prices(URL)
 
     # Header
